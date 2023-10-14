@@ -1,5 +1,5 @@
 # shide
-Shellcode obfuscation and compression
+Shellcode obfuscation, compression and parsing tool.
 
 ## Usage
 ```bash
