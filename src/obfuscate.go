@@ -7,22 +7,17 @@ import (
 )
 
 func generateRandomBytesMap(seed int64, size int) map[byte][]int {
-	// Generate random bytes from a seed
-	var randomBytes = make([]byte, size)
-
 	// Set the seed
 	rand.Seed(seed)
-
-	// Generate random bytes
-	for i := 0; i < size; i++ {
-		randomBytes[i] = byte(rand.Intn(256))
-	}
 
 	// Generate a map of the appearance of each byte, the key is the byte and the value is an array of the indexes where the byte appears
 	var randomBytesMap = make(map[byte][]int)
 
 	// Iterate over the random bytes
-	for i, b := range randomBytes {
+	for i := 0; i < size; i++ {
+		// Get the byte
+		var b = byte(rand.Intn(256))
+
 		// Check if the byte is already in the map
 		if _, ok := randomBytesMap[b]; ok {
 			// Append the index to the array
@@ -43,7 +38,7 @@ func obfuscateRBM(data []byte) []int {
 	var obfuscatedData = make([]int, len(data))
 
 	// Generate an array of 200mb of random bytes from 0x00 to 0xff, originated from the hardcoded seed
-	var randomBytesMap = generateRandomBytesMap(SEED, 200*1024*1024)
+	var randomBytesMap = generateRandomBytesMap(SEED, BLOAT_SIZE)
 
 	// Iterate over the original array
 	for i, b := range data {
@@ -77,7 +72,7 @@ func getDeobfuscationStubC(data []int, otype string) string {
 		deobfuscationStub += `#include <Windows.h>`
 
 		// Create array of size 200mb
-		var size = 200 * 1024 * 1024
+		var size = BLOAT_SIZE
 
 		// Set the seed
 		rand.Seed(SEED)
