@@ -3,87 +3,57 @@ package main
 import (
 	"fmt"
 	"log"
-	"math/rand"
 )
 
-func generateRandomBytesMap(seed int64, size int) map[byte][]int {
-	// Set the seed
-	rand.Seed(seed)
+func obfuscateSHB(data []byte) []byte {
+	// Apply JenkinsOneAtATime32Bit hash to shellcode string on each byte
+	var hashedData []byte
 
-	// Generate a map of the appearance of each byte, the key is the byte and the value is an array of the indexes where the byte appears
-	var randomBytesMap = make(map[byte][]int)
+	// Iterate over each byte
+	for _, b := range data {
+		// Convert byte to string
+		bString := fmt.Sprintf("%d", b)
 
-	// Iterate over the random bytes
-	for i := 0; i < size; i++ {
-		// Get the byte
-		var b = byte(rand.Intn(256))
+		// Iterate over each character in the byte string
+		for _, c := range bString {
+			// Convert character to integer
+			cInt := int(c)
 
-		// Check if the byte is already in the map
-		if _, ok := randomBytesMap[b]; ok {
-			// Append the index to the array
-			randomBytesMap[b] = append(randomBytesMap[b], i)
-		} else {
-			// Create a new array with the index
-			randomBytesMap[b] = []int{i}
+			// Apply JenkinsOneAtATime32Bit hash
+			hashedData = append(hashedData, byte(cInt))
 		}
 	}
-
-	return randomBytesMap
+	return hashedData
 }
 
-func obfuscateRBM(data []byte) []int {
-	// Obfuscate data using Runtime Bload Mapping
-
-	// Create obfuscated array with the same size as the original array
-	var obfuscatedData = make([]int, len(data))
-
-	// Generate an array of 200mb of random bytes from 0x00 to 0xff, originated from the hardcoded seed
-	var randomBytesMap = generateRandomBytesMap(SEED, BLOAT_SIZE)
-
-	// Iterate over the original array
-	for i, b := range data {
-		// Get the array of indexes where the byte appears
-		var indexes = randomBytesMap[b]
-
-		// Get a random index from the array
-		var randomIndex = indexes[rand.Intn(len(indexes))]
-		obfuscatedData[i] = randomIndex
-	}
-
-	return obfuscatedData
-}
-
-func obfuscateBinary(data []byte, otype string) []int {
+func obfuscateBinary(data []byte, otype string) []byte {
 	// Obfuscate binary file
 	switch otype {
-	case "RBM":
-		return obfuscateRBM(data)
+	case "SHB":
+		return obfuscateSHB(data)
 	default:
 		log.Fatal("Invalid obfuscation type")
 		return nil
 	}
 }
 
-func getDeobfuscationStubC(data []int, otype string) string {
+func getDeobfuscationStubC(data []byte, otype string) string {
 	// Get deobfuscation stub in C
 	var deobfuscationStub string
 	switch otype {
-	case "RBM":
+	case "SHB":
 		deobfuscationStub += `#include <Windows.h>`
 
-		// Create array of size 200mb
-		var size = BLOAT_SIZE
-
-		// Set the seed
-		rand.Seed(SEED)
-
-		// Save the random bytes to file in C format
-		deobfuscationStub += "\n\n// Random bytes array\n"
-		deobfuscationStub += "BYTE randomBytes[] = {"
-		for i := 0; i < size; i++ {
-			deobfuscationStub += fmt.Sprintf("0x%02x, ", byte(rand.Intn(256)))
+		// Save data to a variable
+		deobfuscationStub += "\n\nunsigned char data[] = {"
+		for i, b := range data {
+			if i == len(data)-1 {
+				deobfuscationStub += fmt.Sprintf("0x%x", b)
+			} else {
+				deobfuscationStub += fmt.Sprintf("0x%x, ", b)
+			}
 		}
-		deobfuscationStub += "};\n"
+		deobfuscationStub += "};"
 
 	default:
 		log.Fatal("Invalid compression type")
@@ -92,7 +62,7 @@ func getDeobfuscationStubC(data []int, otype string) string {
 	return deobfuscationStub
 }
 
-func getDeobfuscationStub(language string, data []int, ctype string) string {
+func getDeobfuscationStub(language string, data []byte, ctype string) string {
 	// Get decompression stub
 	switch language {
 	case "C":

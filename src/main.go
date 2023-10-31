@@ -120,7 +120,7 @@ func main() {
 			},
 			{
 				Name:        "obfuscate",
-				Usage:       "obfuscate [--language C|Go] [--bin BINARY_FILE] [--type RBM] [--out OUTPUT_FILE]",
+				Usage:       "obfuscate [--language C|Go] [--bin BINARY_FILE] [--type SHB] [--out OUTPUT_FILE]",
 				Description: "Obfuscate a binary file and generate a deobfuscation stub",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
