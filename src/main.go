@@ -8,9 +8,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var SEED int64 = 0xdeadbeef
-var BLOAT_SIZE int = 200 //* 1024 * 1024
-
 func main() {
 	app := &cli.App{
 		Name:  "shide",
@@ -157,11 +154,14 @@ func main() {
 					// Get obfuscation type
 					obfuscationType := c.String("type")
 
+					// Get random seed
+					seed := getRandomSeed()
+
 					// Obfuscate binary file
-					obfuscatedData := obfuscateBinary(data, obfuscationType)
+					obfuscatedData := obfuscateBinary(seed, data, obfuscationType)
 
 					// Get deobfuscation stub
-					deobfuscationStub := getDeobfuscationStub(language, obfuscatedData, obfuscationType)
+					deobfuscationStub := getDeobfuscationStub(language, seed, obfuscatedData, obfuscationType)
 
 					// Check if output file is specified
 					if c.String("out") != "" {
