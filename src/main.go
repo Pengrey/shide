@@ -66,7 +66,7 @@ func main() {
 			},
 			{
 				Name:        "compress",
-				Usage:       "compress [--language C|Go|Rust] [--bin BINARY_FILE] [--type RLE|BWT] [--out OUTPUT_FILE]",
+				Usage:       "compress [--language C|Go|Rust] [--bin BINARY_FILE] [--type RLE] [--out OUTPUT_FILE]",
 				Description: "Compress a binary file and generate a decompression stub",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
@@ -117,7 +117,7 @@ func main() {
 			},
 			{
 				Name:        "obfuscate",
-				Usage:       "obfuscate [--language C|Go] [--bin BINARY_FILE] [--type SHB] [--out OUTPUT_FILE]",
+				Usage:       "obfuscate [--language C|Go] [--bin BINARY_FILE] [--type LSM] [--out OUTPUT_FILE]",
 				Description: "Obfuscate a binary file and generate a deobfuscation stub",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
