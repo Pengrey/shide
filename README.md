@@ -1,7 +1,10 @@
-![shide](https://github.com/Pengrey/shide/assets/55480558/bd53a0eb-b27b-4ea4-948b-30ed4ccbd687)
+<p align="center">
+   <img src="https://github.com/Pengrey/shide/assets/55480558/bd53a0eb-b27b-4ea4-948b-30ed4ccbd687">
+   <p align="center">A Swiss Army knife for Malware Development<br>
+</p>
 
 # shide
-Shellcode obfuscation, compression and parsing tool.
+Shide is a simple versatile tool designed for malware developers to quickly and repeatedly apply malware software patterns to their code. With features for parsing, compressing, and obfuscating payloads, as well as the ability to create custom modules.
 
 ## Usage
 ```bash
