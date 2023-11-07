@@ -1,3 +1,5 @@
+![shide](https://github.com/Pengrey/shide/assets/55480558/bd53a0eb-b27b-4ea4-948b-30ed4ccbd687)
+
 # shide
 Shellcode obfuscation, compression and parsing tool.
 
